@@ -4,7 +4,7 @@
   <name>phyvir</name>
   <version>0.1.0</version>
   <description>A package to handle differences in physical vs virtual LiDAR</description>
-  <maintainer email="l.c.dusil@student.tue.nl">phoebe</maintainer>
+  <maintainer email="l.c.dusil@student.tue.nl">Phoebe Dusil</maintainer>
   <license>Apache-2.0</license>
 
   <test_depend>ament_copyright</test_depend>
