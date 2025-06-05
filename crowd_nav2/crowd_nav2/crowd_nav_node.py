@@ -1,14 +1,15 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
-from nav2_simple_commander.robot_navigator import BasicNavigator
+from rclpy.action import ActionClient
+from nav2_msgs.action import NavigateToPose
 import numpy as np
 import random
 
 
 class CrowdNavNode(Node):
     """
-    A class used to a ROS2 node, simulating a crowd density api, which gives the navigation node a destination.
+    A class used to initialize ROS2 node, simulating a crowd density api, which gives the navigation node a destination.
 
 
 
@@ -67,8 +68,8 @@ class CrowdNavNode(Node):
     def __init__(self):
         super().__init__("crowd_nav_node")
         print("working")
-        self.navigator = BasicNavigator()
-        self.navigator.waitUntilNav2Active()
+        self.nav_client = ActionClient(self, NavigateToPose, "navigate_to_pose")
+
         self.cell_height = 1.5 / 8
         self.cell_width = 2 / 12
         self.grid_size_a = 8
@@ -192,12 +193,11 @@ class CrowdNavNode(Node):
         )
         goal = PoseStamped()
         goal.header.frame_id = "map"
-        goal.header.stamp = self.navigator.get_clock().now().to_msg()
+        goal.header.stamp = self.get_clock().now().to_msg()
         goal.pose.position.x = float(world_x)
         goal.pose.position.y = float(world_y)
         goal.pose.orientation.w = 1.0
-        self.navigator.goToPose(goal)
-        self.navigator.waitUntilNav2Active()
+        self.nav_client.send_goal_async(NavigateToPose.Goal(pose=goal))
 
     # Runs the cycle of the program
     def run_cycle(self):
