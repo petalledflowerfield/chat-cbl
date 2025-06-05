@@ -16,7 +16,9 @@ class YoloRunner(Node):
         super().__init__("yolo_detect")
 
         self.mat = None
-        self.sub = self.create_subscription(Image, "image_raw", self.image_callback, 100)
+        self.sub = self.create_subscription(
+            Image, "image_raw", self.image_callback, 100
+        )
 
         self.model = YOLO(model_path, task="detect")
         self.labels = self.model.names
@@ -82,7 +84,9 @@ class YoloRunner(Node):
         for i in range(len(detections)):
             # Get bounding box coordinates
             # Ultralytics returns results in Tensor format, which have to be converted to a regular Python array
-            xyxy_tensor = detections[i].xyxy.cpu()  # Detections in Tensor format in CPU memory
+            xyxy_tensor = detections[
+                i
+            ].xyxy.cpu()  # Detections in Tensor format in CPU memory
             xyxy = xyxy_tensor.numpy().squeeze()  # Convert tensors to Numpy array
             xmin, ymin, xmax, ymax = xyxy.astype(
                 int
