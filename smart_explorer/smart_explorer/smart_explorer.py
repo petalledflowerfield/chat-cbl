@@ -1,8 +1,8 @@
 import rclpy
-from numpy import integer
+
 from rclpy.node import Node
 from rclpy.action import ActionClient
-from geometry_msgs.msg import PoseStamped
+
 from nav2_msgs.action import NavigateToPose
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Bool
