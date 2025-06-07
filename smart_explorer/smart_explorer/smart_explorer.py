@@ -45,7 +45,9 @@ class SmartExplorer(Node):
         elif self.state == "object":
             self.approach_object()
             self.arrived_at_Object = True
-            self.publisher.publish(self.arrived_at_Object)
+            msg = Bool()
+            msg.data = self.arrived_at_Object
+            self.publisher.publish(msg)
 
     def send_random_goal(self):
         angle = random.uniform(0, 2 * math.pi)

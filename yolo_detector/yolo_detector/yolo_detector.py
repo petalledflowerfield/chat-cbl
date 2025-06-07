@@ -7,7 +7,7 @@ from ultralytics import YOLO
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from std_msgs.msg import String, Bool
+from std_msgs.msg import String, Bool, Int32
 
 model_path = "/home/team 46/ros2_ws/model"
 
@@ -23,7 +23,7 @@ class YoloRunner(Node):
             Image, "image_raw", self.image_callback, 100
         )
         # Publishes number of trash detected
-        self.pub_num = self.create_publisher(int, "trash_num", 10)
+        self.pub_num = self.create_publisher(Int32, "trash_num", 10)
         # Publishes each type of trash
         self.pub_type = self.create_publisher(String, "trash_type", 10)
 
@@ -102,7 +102,9 @@ class YoloRunner(Node):
             # Get bounding box class ID and name
             classidx = int(detections[i].cls.item())
             classname = self.labels[classidx]
-            self.pub_type.publish(classname)
+            msg_type = String()
+            msg_type.data = classname
+            self.pub_type.publish(msg_type)
             # Get bounding box confidence
             conf = detections[i].conf.item()
 
@@ -147,7 +149,9 @@ class YoloRunner(Node):
             (0, 255, 255),
             2,
         )  # Draw framerate
-        self.pub_num.publish(object_count)
+        msg_num = Int32()
+        msg_num.data = object_count
+        self.pub_num.publish(msg_num)
         # Display detection results
         cv2.putText(
             frame,
