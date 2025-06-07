@@ -186,6 +186,7 @@ class YoloRunner(Node):
 
             # Calculate average FPS for past frames
             self.avg_frame_rate = np.mean(self.frame_rate_buffer)
+            self.arrived_at_Object = False
         else:
             return
 def arrival_callback(self, msg):

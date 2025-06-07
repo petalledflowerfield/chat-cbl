@@ -45,6 +45,7 @@ class SmartExplorer(Node):
         elif self.state == "object":
             self.approach_object()
             self.arrived_at_Object = True
+            self.get_logger().info(self.nav_client.get_result())
             msg = Bool()
             msg.data = self.arrived_at_Object
             self.publisher.publish(msg)
