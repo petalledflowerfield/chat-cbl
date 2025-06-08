@@ -1,5 +1,6 @@
 from rclpy.node import Node  # Base class for writing in ros2 node
 from std_msgs.msg import Bool
+import rclpy
 
 
 class Signaling(Node):
@@ -19,3 +20,12 @@ class Signaling(Node):
             self.get_logger().info("A lot of trash detected, extra robots called!")
             self.signal = True
             self.publisher.publish(self.signal)
+
+
+# Running the ROS2 stuff
+def main(args=None):
+    rclpy.init(args=args)
+    node = Signaling()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
