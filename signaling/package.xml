@@ -3,7 +3,7 @@
 <package format="3">
   <name>crowd_nav2</name>
   <version>0.0.0</version>
-  <description>Implements a crowd density API simulator, and sends target location to navigation.</description>
+  <description>Signals for more robots, based off machine learning object detection.</description>
   <maintainer email="b.tomics@student.tue.nl">Balazs Tomics</maintainer>
   <license>Apache-2.0</license>
 
