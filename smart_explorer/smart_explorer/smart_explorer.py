@@ -4,7 +4,7 @@ from rclpy.node import Node
 from rclpy.action import ActionClient
 
 from nav2_msgs.action import NavigateToPose
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, Pose
 from std_msgs.msg import Bool
 
 import random
@@ -15,14 +15,16 @@ class SmartExplorer(Node):
     def __init__(self):
         super().__init__("smart_explorer")
         self.nav_client = ActionClient(self, NavigateToPose, "navigate_to_pose")
-
+        self.disc_angle = 0
+        self.disc_distance = 0
+        self.object_detected = False
         self.wander_radius = 2.5
         self.current_loc = (0, 0)
         self.arrived_at_Object = False
         self.subscription = self.create_subscription(
-            Discrepancy, "/phyvir", self.object_callback, 10
+            PoseStamped, "/phyvir", self.object_callback, 10
         )
-        self.publisher = self.create_publisher(Bool, "arrived_at_Object", 10)
+        self.publisher = self.create_publisher(Bool, "/arrived_at_Object", 10)
         self.timer = self.create_timer(15.0, self.control_loop)
 
         self.active_goal = None
