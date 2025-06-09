@@ -13,15 +13,16 @@ import math
 class fake_node(Node):
     def __init__(self):
         super().__init__("fake_node")
+        print("working")
         self.publisher = self.create_publisher(PoseStamped, "/phyvir", 10)
-        self.timer = self.create_timer(15.0, self.timer_callback)
+        self.timer = self.create_timer(45, self.timer_callback)
 
     def timer_callback(self):
         object_detected = PoseStamped()
         object_detected.header.frame_id = "map"
         object_detected.header.stamp = self.get_clock().now().to_msg()
-        object_detected.pose.position.x = random.uniform(-2, 2)
-        object_detected.pose.position.y = random.uniform(-2, 2)
+        object_detected.pose.position.x = random.uniform(-4, 4)
+        object_detected.pose.position.y = random.uniform(-4, 4)
         object_detected.pose.orientation.w = 1.0
         self.publisher.publish(object_detected)
         self.get_logger().info(
