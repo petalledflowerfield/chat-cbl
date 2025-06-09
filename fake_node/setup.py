@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'FakeNode'
+package_name = 'fake_node'
 
 setup(
     name=package_name,
@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'FakeNode = FakeNode.FakeNode:main'
+            'fake_node = fake_node.fake_node:main'
         ],
     },
 )

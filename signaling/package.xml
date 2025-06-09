@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>crowd_nav2</name>
+  <name>signaling</name>
   <version>0.0.0</version>
   <description>Signals for more robots, based off machine learning object detection.</description>
   <maintainer email="b.tomics@student.tue.nl">Balazs Tomics</maintainer>

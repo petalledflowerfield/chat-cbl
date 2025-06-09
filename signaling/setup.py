@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'signaling = signaling.signaling_node:main'
+            'signaling = signaling.signaling:main'
         ],
     },
 )

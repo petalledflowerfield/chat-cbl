@@ -10,9 +10,9 @@ from std_msgs.msg import Bool
 import random
 import math
 
-class FakeNode(Node):
+class fake_node(Node):
     def __init__(self):
-        super().__init__("smart_explorer")
+        super().__init__("fake_node")
         self.publisher = self.create_publisher(PoseStamped, "/phyvir", 10)
         self.timer = self.create_timer(15.0, self.timer_callback)
 
@@ -40,10 +40,11 @@ class FakeNode(Node):
 
 
 
-def main():
-    rclpy.init()
-    node = FakeNode()
+def main(args=None):
+    rclpy.init(args=args)
+    node = fake_node()
     rclpy.spin(node)
+    node.destroy_node()
     rclpy.shutdown()
 
 
