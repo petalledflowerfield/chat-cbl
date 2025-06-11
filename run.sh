@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git submodule update --init
+
 export TURTLEBOT3_MODEL=burger
 
 read -p "IP " bot_ip
@@ -11,13 +13,13 @@ ros2 run usb_cam usb_cam_node_exe &
 exit
 EOF
 
-mkdir -p ~/turtlebot3_ws/src
+ws_path=~/chat_turtlebot3_ws
 
-git clone https://github.com/petalledflowerfield/turtlebot3_simulations -b foxy-devel ~/turtlebot3_ws/src/turtlebot3_simulations
+mkdir -p $ws_path/src
 
-cp -r crowd_nav2 fake_node phyvir signaling smart_explorer trash_map yolo_detector ~/turtlebot3_ws/src
+cp -r crowd_nav2 fake_node phyvir signaling smart_explorer trash_map yolo_detector turtlebot3_simulations $ws_path/src/
 
-cd ~/turtlebot3_ws
+cd $ws_path
 
 colcon build
 source install/setup.bash
