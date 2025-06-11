@@ -88,7 +88,7 @@ class PhyVir(Node):
                 pose.pose.position.z = 0.0
                 pose.pose.orientation.w = 1.0
 
-                discrepancies.appened(pose)
+                discrepancies.append(pose)
 
         return discrepancies
 
