@@ -43,9 +43,18 @@ case $yn in
       exit;;
 esac
 
-read -p "Press enter to run necessary nodes"
+read -p "Calibrate the navigation module, then press enter to run necessary nodes"
 
 ros2 run phyvir phyvir_passthru &
-ros2 run smart_explorer smart_explorer &
+
+read -p "Check if phyvir is working as expected (next is yolo_detector)"
+
 ros2 run yolo_detector yolo_detector &
+
+read -p "Check if yolo_detector is working as expected (next is signaling)"
+
 ros2 run signaling signaling &
+
+read -p "Check if signaling is working as expected (next is smart_explorer)"
+
+ros2 run smart_explorer smart_explorer
