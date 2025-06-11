@@ -18,7 +18,9 @@ class YoloRunner(Node):
         self.arrived_at_Object = False
         self.mat = None
 
-        self.sub_arrived = self.create_subscription(Bool, "/arrived_at_Object", self.arrival_callback, 100)
+        self.sub_arrived = self.create_subscription(
+            Bool, "/arrived_at_Object", self.arrival_callback, 100
+        )
         self.sub = self.create_subscription(
             Image, "image_raw", self.image_callback, 100
         )
@@ -189,6 +191,8 @@ class YoloRunner(Node):
             self.arrived_at_Object = False
         else:
             return
+
+
 def arrival_callback(self, msg):
     self.arrived_at_Object = msg.data
 

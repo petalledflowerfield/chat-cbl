@@ -215,7 +215,7 @@ class CrowdNavNode(Node):
         best_target = targets[best_index]
         self.get_logger().info(f"Navigating to target: {best_target}")
         self.get_logger().info(
-            f"Navigating to target: {self.grid_to_world(best_target[1], best_target[0],self.cell_width, self.cell_height, self.start_loc )}"
+            f"Navigating to target: {self.grid_to_world(best_target[1], best_target[0], self.cell_width, self.cell_height, self.start_loc)}"
         )
         self.send_goal(best_target[1], best_target[0])  # x = col, y = row
         self.start_loc = best_target

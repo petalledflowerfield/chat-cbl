@@ -28,13 +28,10 @@ class SmartExplorer(Node):
         self.timer = self.create_timer(15.0, self.control_loop)
 
         self.resume_timer = None
-        self.state = 'wander'
+        self.state = "wander"
         self.active_goal = None
 
-
     def object_callback(self, msg):
-
-
         obj_pose = PoseStamped()
         obj_pose.header.frame_id = "map"
         obj_pose.header.stamp = self.get_clock().now().to_msg()
@@ -48,13 +45,12 @@ class SmartExplorer(Node):
         self.publisher.publish(msg)
         self.get_logger().info("Approaching detected object...")
         self.nav_client.send_goal_async(NavigateToPose.Goal(pose=obj_pose))
-        self.state = 'object'
+        self.state = "object"
         self.resume_timer = self.create_timer(15.0, self.resume_wandering)
 
     def resume_wandering(self):
         self.get_logger().info("Done waiting. Switching back to wander mode.")
         self.state = "wander"
-
 
         if self.resume_timer is not None:
             self.resume_timer.cancel()
@@ -65,9 +61,8 @@ class SmartExplorer(Node):
             self.get_logger().warn("Nav2 server not available.")
             return
 
-        if self.state == 'wander':
+        if self.state == "wander":
             self.send_random_goal()
-
 
     def send_random_goal(self):
         angle = random.uniform(0, 2 * math.pi)
@@ -88,8 +83,6 @@ class SmartExplorer(Node):
             f"Sending wander goal to x={goal_pose.pose.position.x:.2f}, y={goal_pose.pose.position.y:.2f}"
         )
         self.nav_client.send_goal_async(NavigateToPose.Goal(pose=goal_pose))
-
-
 
 
 def main():

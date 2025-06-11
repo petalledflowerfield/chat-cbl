@@ -10,6 +10,7 @@ from std_msgs.msg import Bool
 import random
 import math
 
+
 class fake_node(Node):
     def __init__(self):
         super().__init__("fake_node")
@@ -26,19 +27,8 @@ class fake_node(Node):
         object_detected.pose.orientation.w = 1.0
         self.publisher.publish(object_detected)
         self.get_logger().info(
-            f"Published pose at x={object_detected.pose.position.x}, y={object_detected.pose.position.y}")
-
-
-
-
-
-
-
-
-
-
-
-
+            f"Published pose at x={object_detected.pose.position.x}, y={object_detected.pose.position.y}"
+        )
 
 
 def main(args=None):
@@ -47,7 +37,6 @@ def main(args=None):
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
-
 
 
 if __name__ == "__main__":
