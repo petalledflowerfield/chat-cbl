@@ -1,0 +1,4 @@
+[submodule "turtlebot3_simulations"]
+	path = turtlebot3_simulations
+	url = https://github.com/petalledflowerfield/turtlebot3_simulations
+	branch = foxy-devel
