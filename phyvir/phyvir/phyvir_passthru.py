@@ -93,7 +93,7 @@ class PhyVir(Node):
         if self.virtual_scan is None or self.physical_scan is None:
             return
 
-        discrepancies = self.find_discrepancies()
+        discrepancies = self.find_discrepancies(0.5)
 
         if len(discrepancies) >= 1:
             self.discrepancy_pub.publish(discrepancies[0])

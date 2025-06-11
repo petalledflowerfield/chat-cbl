@@ -77,8 +77,7 @@ class PhyVir(Node):
             point = angle_to_point(distance, vir_scan, angle)
 
             if not any(
-                norm(np.array(point) - np.array(phy_point)) < threshold
-                for phy_point in phy_points
+                norm(np.array(point) - np.array(phy_point)) < threshold for phy_point in phy_points
             ):
                 pose = PoseStamped()
                 pose.header.stamp = phy_scan.header.stamp
@@ -97,7 +96,7 @@ class PhyVir(Node):
         if self.virtual_scan is None or self.physical_scan is None:
             return
 
-        discrepancies = self.find_discrepancies()
+        discrepancies = self.find_discrepancies(0.5)
 
         if len(discrepancies) >= 1:
             self.discrepancy_pub.publish(discrepancies[0])
