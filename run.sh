@@ -30,6 +30,7 @@ read -p "Place the robot in the same location as in the virtual environment"
 read -p "Run teleop in a separate window and move the robot around to check the scale of the virtual environment with the physical environment (if adjustments needed, exit with Ctrl-C)"
 read -p "Press enter to run necessary nodes"
 
-ros2 run phyvir phyvir_passthru
-ros2 run smart_explorer smart_explorer
-ros2 run yolo_detector yolo_detector
+ros2 run phyvir phyvir_passthru &
+ros2 run smart_explorer smart_explorer &
+ros2 run yolo_detector yolo_detector &
+ros2 run signaling signaling &
