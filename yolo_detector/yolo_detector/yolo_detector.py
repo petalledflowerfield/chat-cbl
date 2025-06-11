@@ -189,8 +189,8 @@ class YoloRunner(Node):
             return
 
 
-def arrival_callback(self, msg):
-    self.arrived_at_Object = msg.data
+    def arrival_callback(self, msg):
+        self.arrived_at_Object = msg.data
 
 
 def main(args=None):
