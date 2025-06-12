@@ -20,6 +20,7 @@ ws_path=~/chat_turtlebot3_ws
 mkdir -p $ws_path/src
 
 cp -r crowd_nav2 fake_node phyvir signaling smart_explorer trash_map yolo_detector turtlebot3_simulations $ws_path/src/
+cp -r model /tmp
 
 cd $ws_path
 

@@ -9,7 +9,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from std_msgs.msg import String, Bool, Int32
 
-model_path = "/home/team 46/ros2_ws/model"
+model_path = "/tmp/model/my_model"
 
 
 class YoloRunner(Node):
@@ -187,7 +187,6 @@ class YoloRunner(Node):
             self.arrived_at_Object = False
         else:
             return
-
 
     def arrival_callback(self, msg):
         self.arrived_at_Object = msg.data
