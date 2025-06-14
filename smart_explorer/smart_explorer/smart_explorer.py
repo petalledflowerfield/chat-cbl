@@ -3,6 +3,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
 from rclpy.action.client import ClientGoalHandle
+from geometry_msgs.msg import PoseStamped, Quaternion, Twist
 from nav2_msgs.action import NavigateToPose
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Bool
@@ -10,6 +11,16 @@ from std_msgs.msg import Bool
 import random
 import math
 
+
+
+YAW_DEG      = 0.0
+
+
+def yaw_to_quaternion(yaw: float) -> Quaternion:
+    q = Quaternion()
+    q.z = math.sin(yaw * 0.5)
+    q.w = math.cos(yaw * 0.5)
+    return q
 
 class SmartExplorer(Node):
     def __init__(self):
@@ -23,10 +34,10 @@ class SmartExplorer(Node):
         self.current_loc = (0, 0)
         self.arrived_at_Object = False
         self.subscription = self.create_subscription(
-            PoseStamped, "/discrepancies", self.object_callback, 10
+            PoseStamped, "/phyvir", self.object_callback, 10
         )
         self.publisher = self.create_publisher(Bool, "/arrived_at_object", 10)
-        self.timer = self.create_timer(15.0, self.control_loop)
+        self.timer = self.create_timer(30, self.control_loop)
 
         self.resume_timer = None
         self.state = 'wander'
@@ -47,7 +58,7 @@ class SmartExplorer(Node):
         obj_pose.header.stamp = self.get_clock().now().to_msg()
         obj_pose.pose.position.x = msg.pose.position.x
         obj_pose.pose.position.y = msg.pose.position.y
-        obj_pose.pose.orientation.w = 1.0
+        obj_pose.pose.orientation = yaw_to_quaternion(math.radians(YAW_DEG))
         self.arrived_at_Object = True
 
         msg = Bool()
@@ -57,10 +68,12 @@ class SmartExplorer(Node):
 
         goal_msg = NavigateToPose.Goal()
         goal_msg.pose = obj_pose
-        self.nav_client.send_goal_async(goal_msg)
-
+        send_goal_future= self.nav_client.send_goal_async(goal_msg)
+        send_goal_future.add_done_callback(self.object_goal_response_callback)
         self.state = 'object'
         self.resume_timer = self.create_timer(45.0, self.resume_wandering)
+
+
 
     def resume_wandering(self):
         self.get_logger().info("Done waiting. Switching back to wander mode.")
@@ -91,13 +104,13 @@ class SmartExplorer(Node):
         goal_pose.header.stamp = self.get_clock().now().to_msg()
         goal_pose.pose.position.x = dx
         goal_pose.pose.position.y = dy
-        goal_pose.pose.orientation.w = 1.0
+        goal_pose.pose.orientation = yaw_to_quaternion(math.radians(YAW_DEG))
         self.current_loc = goal_pose.pose.position.x, goal_pose.pose.position.y
 
         self.get_logger().info(
             f"Sending wander goal to x={goal_pose.pose.position.x:.2f}, y={goal_pose.pose.position.y:.2f}"
         )
-        self.nav_client.send_goal_async(NavigateToPose.Goal(pose=goal_pose))
+
 
         goal_msg = NavigateToPose.Goal()
         goal_msg.pose = goal_pose
@@ -105,13 +118,31 @@ class SmartExplorer(Node):
         send_goal_future = self.nav_client.send_goal_async(goal_msg)
         send_goal_future.add_done_callback(self.wander_goal_response_callback)
 
+
     def wander_goal_response_callback(self, future):
         goal_handle = future.result()
         if not goal_handle.accepted:
             self.get_logger().info("Wander goal rejected.")
             return
         self.get_logger().info("Wander goal accepted.")
+
+        goal_handle.get_result_async().add_done_callback(self._result_cb)
         self.active_goal = goal_handle
+
+    def object_goal_response_callback(self, future):
+        goal_handle = future.result()
+        if not goal_handle.accepted:
+            self.get_logger().info("object goal rejected.")
+            return
+        self.get_logger().info("object goal accepted.")
+
+        goal_handle.get_result_async().add_done_callback(self._result_cb)
+        self.active_goal = goal_handle
+
+    def _result_cb(self, fut):
+        status = fut.result().status
+        txt = {4:'SUCCEEDED',6:'ABORTED',5:'CANCELED'}.get(status,'DONE')
+        self.get_logger().info(f'Goal result: {txt}')
 
 
 
