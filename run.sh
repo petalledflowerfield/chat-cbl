@@ -29,7 +29,7 @@ source install/setup.bash
 
 read -p "Press enter to launch virtual environment"
 
-ros2 launch turtlebot3_gazebo first_world.launch.py > /dev/null &
+ros2 launch turtlebot3_gazebo first_world.launch.py > /tmp/turtlebot3_gazebo.log &
 
 echo "ROS2 topics:"
 ros2 topic list -v
@@ -39,23 +39,23 @@ read -p "Run teleop in a separate window and move the robot around to check the 
 
 read -p "Do you have a slam map yet? (y/N)" yn
 case $yn in
-  [Yy]* ) ros2 launch turtlebot3_navigation2 navigation2.launch.py map:=$(pwd)/maps/map.yaml > /dev/null & ;;
+  [Yy]* ) ros2 launch turtlebot3_navigation2 navigation2.launch.py map:=$(pwd)/maps/map.yaml > /tmp/turtlebot3_navigation2.log & ;;
   * ) echo "Go run make_slam.sh first"
       exit;;
 esac
 
 read -p "Calibrate the navigation module, then press enter to run necessary nodes"
 
-ros2 run phyvir phyvir_passthru &
+ros2 run phyvir phyvir_passthru > /tmp/phyvir.log &
 
 read -p "Check if phyvir is working as expected (next is yolo_detector)"
 
-ros2 run yolo_detector yolo_detector &
+ros2 run yolo_detector yolo_detector > /tmp/yolo_detector.log &
 
 read -p "Check if yolo_detector is working as expected (next is signaling)"
 
-ros2 run signaling signaling &
+ros2 run signaling signaling > /tmp/signaling.log &
 
 read -p "Check if signaling is working as expected (next is smart_explorer)"
 
-ros2 run smart_explorer smart_explorer
+ros2 run smart_explorer smart_explorer > /tmp/smart_explorer.log
