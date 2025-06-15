@@ -33,4 +33,26 @@ to have trouble processing differences between the two environments.
 
 ## Bottlenecks or challenges
 
+Many challenges arose throughout the course of the project, both within our code and implemetation,
+but also due to the given configurations of both the at-home virtual environment and the in-lab
+physical environment. What we mean by this is that the Docker environment provided by the course
+was running ROS2 Humble, whereas the lab laptop and TurtleBot were running ROS2 Foxy. This proved
+to cause some difficulties for us as we were developing our packages from home; testing them in
+the Docker environment only to find out that some dependencies have trouble running on Foxy.
+This did generally make us more aware of the version differences, though it did set us back in
+some ways.
+
+In many other cases the limitations of Python also served as a minor roadblock. While being a
+simple and approachable language to work with, its lack of compile-time error checks and general
+functionality testing makes it difficult to work with when we only have one time slot a week to
+test the code out. In some cases we would write some code and be ready to work with it, but
+have no way of knowing about the validity of semantics or types until we were met with an error
+on location.
+
+Overall however, we found ourselves to be quite efficient in terms of distributing tasks so as to
+not cause bottlenecks between what needs to be worked on and what has to wait for completion of
+that task. We mainly discussed ROS topics to be published to and consumed from, allowing us to
+communicate data between our tasks without actually fully having the producers/consumers
+implemented yet.
+
 ## What we could improve or expand
