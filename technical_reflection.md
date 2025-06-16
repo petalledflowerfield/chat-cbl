@@ -17,6 +17,11 @@ solely a limitation of our implementation and an opening for future work and imp
 
 ### Bottlenecks or challenges
 
+Throughout working on bidirectionality of our project the biggest challenge we ran into was
+an issue synchronizing the physical and digital robots. The physical robot experienced minor
+real-world wheel drifting and discrepancies of the real-world wheels that do not reflect in
+the virtual environment, which runs an ideal version of the robot.
+
 ### What we could improve or expand
 
 ## State Synchronization
@@ -39,6 +44,13 @@ the proof of concept.
 
 ### Bottlenecks or challenges
 
+Similar to the case of Bidirectional Communication we felt quite challenged by the physical and
+virtual environments becoming desynchronized over time. Having had only a few sessions to work
+with the physical environment, made it difficult to understand what the issue is and how we could
+solve it. This not only made it difficult to work in the environment, but also resulted in
+uncertainty of how to approach other modules. Ultimately we would have benefitted from
+understanding the problem earlier.
+
 ### What we could improve or expand
 
 ## Object Interaction
@@ -54,5 +66,11 @@ technical solution would. This would require a robotic arm and a few more weeks 
 which we leave as future work.
 
 ### Bottlenecks or challenges
+
+For object interaction we faced challenges regarding our physical-virtual filtering code not doing
+what we expected it to do as we wrote it before the lab session. This was an exceptionally
+difficult issue to work with unless we were on location physically. This proved to be
+challenging as we ended up running into issues in lab sessions that we intended to use to test
+other aspects of our project.
 
 ### What we could improve or expand
