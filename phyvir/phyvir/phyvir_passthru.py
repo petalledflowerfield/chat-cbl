@@ -14,6 +14,7 @@ class PhyVir(Node):
     subscriber_physical = None
     scan_pub = None
     discrepancy_pub = None
+    detected = False
 
     physical_scan = None
     virtual_scan = None
@@ -47,7 +48,15 @@ class PhyVir(Node):
         self.physical_scan = msg
         self.get_logger().info("Got message from physical scanner")
 
-    def find_discrepancies(self, threshold: float) -> PoseStamped:
+    def find_discrepancies(self, threshold: float) -> list[PoseStamped]:
+        """Find discrepancies between the latest physical and digital LiDAR scans.
+
+        Arguments:
+        threshold -- the threshold within which a difference in scanner data is considered a
+                     discrepancy.
+
+        Returns a list of PostStamped positions indicating the positions of discrepancies.
+        """
         discrepancies = []
 
         phy_scan = self.physical_scan
@@ -93,10 +102,20 @@ class PhyVir(Node):
         if self.virtual_scan is None or self.physical_scan is None:
             return
 
-        discrepancies = self.find_discrepancies(0.5)
+        if self.detected_cooldown > 0:
+            self.detected_cooldown -= 1
+
+            if self.detected_cooldown == 0:
+                self.detected = False
+
+            return
+
+        discrepancies = self.find_discrepancies(0.2)
 
         if len(discrepancies) >= 1:
             self.discrepancy_pub.publish(discrepancies[0])
+            self.detected = True
+            self.detected_cooldown = 100
 
         self.physical_scan = None
         self.virtual_scan = None

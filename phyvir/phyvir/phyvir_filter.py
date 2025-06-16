@@ -1,5 +1,5 @@
 import numpy as np
-from np.linalg import norm
+from numpy.linalg import norm
 
 import rclpy
 from rclpy.node import Node
@@ -50,7 +50,15 @@ class PhyVir(Node):
         self.physical_scan = msg
         self.get_logger().info("Got message from physical scanner")
 
-    def find_discrepancies(self, threshold: float) -> PoseStamped:
+    def find_discrepancies(self, threshold: float) -> list[PoseStamped]:
+        """Find discrepancies between the latest physical and digital LiDAR scans.
+
+        Arguments:
+        threshold -- the threshold within which a difference in scanner data is considered a
+                     discrepancy.
+
+        Returns a list of PostStamped positions indicating the positions of discrepancies.
+        """
         discrepancies = []
 
         phy_scan = self.physical_scan
@@ -96,7 +104,7 @@ class PhyVir(Node):
         if self.virtual_scan is None or self.physical_scan is None:
             return
 
-        discrepancies = self.find_discrepancies(0.5)
+        discrepancies = self.find_discrepancies(0.2)
 
         if len(discrepancies) >= 1:
             self.discrepancy_pub.publish(discrepancies[0])
