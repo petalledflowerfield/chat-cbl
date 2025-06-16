@@ -62,7 +62,6 @@ understanding the problem earlier.
 
 ### What we could improve or expand
 
-Future Improvements
 Improve time-stamping and synchronization mechanisms to reduce drift between environments. This would help us greatly in making sure the states stay synchronised. 
 In the future we could also implement proper physics into the virtual world, so the friction and other external factors have the same effect on the virtual as the physical. This would also greatly help making sure the robots stay in sync.
 
