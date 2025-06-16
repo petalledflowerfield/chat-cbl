@@ -34,7 +34,7 @@ class SmartExplorer(Node):
         self.current_loc = (0, 0)
         self.arrived_at_Object = False
         self.subscription = self.create_subscription(
-            PoseStamped, "/phyvir", self.object_callback, 10
+            PoseStamped, "discrepancies", self.object_callback, 10
         )
         self.publisher = self.create_publisher(Bool, "/arrived_at_object", 10)
         self.timer = self.create_timer(30, self.control_loop)
