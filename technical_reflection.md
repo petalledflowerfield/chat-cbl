@@ -7,9 +7,25 @@ improved it having had more time.
 
 ### What we achieved
 
-Successfully established ROS 2-based communication between the physical TurtleBot3 and a virtual TurtleBot3 in Gazebo. This allowed us to implement a python ROS2 package “smart-explorer” that enables the robot to wander around an area autonomously.
-Implemented a ROS2 node “yolo_detector” that receives image data from the real robot and processes it for object classification using a YOLOv8 machine learning model. Classifying the detected objects, into three types of recyclable trash or non-trash, and publishing this information to an ROS2 topic “image_raw”. Based off this information implemented a ROS2 package “trash_map”  that based of this information, logs all trash detected and “picked up”, managing the storage limitations of the robot and creating a trash distribution map. We also added that the digital part of the system sends a specific command on how to handle the trash, allowing the robot to properly recycle.
-Enabled the virtual robot to mirror the real robot’s movements and sensor data in near real-time. Using a virtual environment that mirrored the real world environments basic skeleton, we were able implement a filter ROS2 node “phyvir”, that detects any discrepancies (in theory any discrepancy between the mirrored environment is potential trash) between the environments. We used the lidar information provided by the real world robot and virtual robot to calculate the location of these discrepancies and send the robot to investigate further using the camera. 
+Successfully established ROS 2-based communication between the physical TurtleBot3 and a virtual
+TurtleBot3 in Gazebo. This allowed us to implement a python ROS2 package “smart_explorer” that
+enables the robot to wander around an area autonomously.
+
+Implemented a ROS2 node “yolo_detector” that receives image data from the real robot and processes
+it for object classification using a YOLOv8 machine learning model. Classifying the detected
+objects, into three types of recyclable trash or non-trash, and publishing this information to a
+ROS2 topic “image_raw”. Based off this information implemented a ROS2 package “trash_map”, which
+logs all trash detected and “picked up”, managing the storage limitations of the robot and
+creating a trash distribution map. We also added that the digital part of the system sends a
+specific command on how to handle the trash, allowing the robot to properly recycle.
+
+Enabled the virtual robot to mirror the real robot’s movements and
+sensor data in near real-time. Using a virtual environment that mirrored the real world
+environments basic skeleton, we were able implement a filter ROS2 node “phyvir”, that detects any
+discrepancies (in theory any discrepancy between the mirrored environment is potential trash)
+between the environments. We used the lidar information provided by the real world robot and
+virtual robot to calculate the location of these discrepancies and send the robot to investigate
+further using the camera.
 
 ### What we did not achieve
 
@@ -28,14 +44,21 @@ the virtual environment, which runs an ideal version of the robot.
 
 ### What we could improve or expand
 
-Implement a more robust communication protocol with buffering and error handling. This could potentially fix issues we currently face with desynchronization and overall lag between the two states.
-Integrate feedback loops to allow the virtual environment to influence real-world robot behaviour more dynamically. This would allow the robot to be more efficient and autonomous. For example this would include digital trash cans that mark areas that have been recently cleaned.
+Implement a more robust communication protocol with buffering and error handling. This could
+potentially fix issues we currently face with desynchronization and overall lag between the two
+states. Integrate feedback loops to allow the virtual environment to influence real-world robot
+behaviour more dynamically. This would allow the robot to be more efficient and autonomous. For
+example this would include digital trash cans that mark areas that have been recently cleaned.
 
 ## State Synchronization
 
 ### What we achieved
 
-Real-time synchronization of movement and sensor data (e.g., LiDAR) between the physical and virtual robots. We remapped the lidar scan ROS2 scans, to manage conflict between the virtual LIDAR and physical LIDAR. For this we also implemented an ROS2 filter node that detects discrepancies between the two sensors, and prioritizes the physicals sensors data, and also calculates the location of the discrepancies and publishes to a “discrepancy” ROS2 topic.
+Real-time synchronization of movement and sensor data (e.g., LiDAR) between the physical and
+virtual robots. We remapped the LiDAR scan ROS2 scans, to manage conflict between the virtual
+LiDAR and physical LiDAR. For this we also implemented an ROS2 filter node that detects
+discrepancies between the two sensors, and prioritizes the physicals sensors data, and also
+calculates the location of the discrepancies and publishes to a “discrepancy” ROS2 topic.
 
 ### What we did not achieve
 
@@ -62,17 +85,33 @@ understanding the problem earlier.
 
 ### What we could improve or expand
 
-Improve time-stamping and synchronization mechanisms to reduce drift between environments. This would help us greatly in making sure the states stay synchronised. 
-In the future we could also implement proper physics into the virtual world, so the friction and other external factors have the same effect on the virtual as the physical. This would also greatly help making sure the robots stay in sync.
+Improve time-stamping and synchronization mechanisms to reduce drift between environments. This
+would help us greatly in making sure the states stay synchronised.  In the future we could also
+implement proper physics into the virtual world, so the friction and other external factors have
+the same effect on the virtual as the physical. This would also greatly help making sure the
+robots stay in sync.
 
 ## Object Interaction
 
 ### What we achieved
 
 There are 2 main ways our system implements environmental and object interaction.
-Firstly, we implemented a filter ROS2 node to detect discrepancies between the virtual worlds LIDAR data and physical LIDAR data, and calculate this discrepancies location. This is useful because any discrepancy between the virtual world and the physical is potential trash for the robot to pickup. We then publish this information to a ROS2 topic called  “discrepancy”. When this is published, another ROS2 node we developed responsible for navigation, switches from wandering mode to object mode, and the robot approaches the objects location and parks in front of it. 
-Secondly, utilizing this object detection feature,  we connected a camera to the robot and developed an ROS2 node which publishes the image from the camera to an ROS2 topic called “image_raw”. Based off this, we created the ROS2 package “yolo_detector”, that uses a YOLOv8 machine learning model to process the images, and publish information about them into two topics such as “trash_num”  and “trash_type”. 
-So in summary we use the navigation feature to find and approach object, and use the camera and machine learning to classify these objects.
+
+Firstly, we implemented a filter ROS2 node to detect discrepancies between the virtual worlds
+LiDAR data and physical LiDAR data, and calculate this discrepancies location. This is useful
+because any discrepancy between the virtual world and the physical is potential trash for the robot
+to pickup. We then publish this information to a ROS2 topic called “discrepancy”. When this is
+published, another ROS2 node we developed responsible for navigation, switches from wandering mode
+to object mode, and the robot approaches the objects location and parks in front of it.
+
+Secondly, utilizing this object detection feature,  we connected a camera to the robot and
+developed an ROS2 node which publishes the image from the camera to an ROS2 topic called
+“image_raw”. Based off this, we created the ROS2 package “yolo_detector”, that uses a YOLOv8
+machine learning model to process the images, and publish information about them into two topics
+such as “trash_num” and “trash_type”.
+
+So in summary we use the navigation feature to find and approach object, and use the camera and
+machine learning to classify these objects.
 
 ### What we did not achieve
 
