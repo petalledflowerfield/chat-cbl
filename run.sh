@@ -2,18 +2,9 @@
 
 exec 2>&1
 
-git submodule update --init
-
 export TURTLEBOT3_MODEL=burger
 
-read -p "IP " bot_ip
-
-ssh ubuntu@$bot_ip << EOF
-export TURTLEBOT3_MODEL=$TURTLEBOT3_MODEL
-ros2 launch turtlebot3_bringup robot.launch.py &
-ros2 run usb_cam usb_cam_node_exe &
-exit
-EOF
+echo "Make sure the robot is running and brought up!"
 
 ws_path=~/chat_turtlebot3_ws
 
