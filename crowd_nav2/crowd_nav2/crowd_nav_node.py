@@ -1,11 +1,21 @@
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped
+
 from rclpy.action import ActionClient
 from nav2_msgs.action import NavigateToPose
+from geometry_msgs.msg import PoseStamped, Quaternion, Twist
 import numpy as np
 import random
+import math
 
+YAW_DEG      = 0.0
+
+
+def yaw_to_quaternion(yaw: float) -> Quaternion:
+    q = Quaternion()
+    q.z = math.sin(yaw * 0.5)
+    q.w = math.cos(yaw * 0.5)
+    return q
 
 class CrowdNavNode(Node):
     """
@@ -70,57 +80,23 @@ class CrowdNavNode(Node):
         print("working")
         self.nav_client = ActionClient(self, NavigateToPose, "navigate_to_pose")
 
-        self.cell_height = 1.5 / 8
-        self.cell_width = 2 / 12
-        self.grid_size_a = 8
-        self.grid_size_b = 12
+        self.cell_height = 1.8 / 3
+        self.cell_width = 1.8 / 3
+        self.grid_size_a = 3
+        self.grid_size_b = 3
         self.start_loc = (0, 0)
         self.hour = 0
         self.weight_D = 0.2
         self.weight_H = 0.6
         self.weight_L = 0.2
         self.high_density_zone = [
-            (1, 4),
-            (1, 5),
-            (1, 6),
-            (2, 4),
-            (2, 5),
-            (2, 6),
-            (3, 4),
-            (3, 5),
-            (3, 6),
+            (1, 2),
+            (1, 1),
+
         ]
         self.obstacles = [
-            (1, 0),
-            (1, 1),
-            (1, 2),
-            (3, 0),
-            (3, 1),
-            (3, 2),
-            (1, 9),
-            (1, 10),
-            (2, 9),
-            (2, 10),
-            (3, 9),
-            (3, 10),
-            (5, 3),
-            (5, 4),
-            (5, 5),
-            (5, 6),
-            (6, 3),
-            (6, 4),
-            (6, 5),
-            (6, 6),
-            (7, 3),
-            (7, 4),
-            (7, 5),
-            (7, 6),
-            (5, 10),
-            (6, 10),
-            (7, 10),
-            (5, 11),
-            (6, 11),
-            (7, 11),
+            (0, 1),
+            (0, 2)
         ]
         self.prev_grid = self.gen_grid(self.hour)
         self.prev_grid = self.apply_obstacles(self.prev_grid)
@@ -196,7 +172,7 @@ class CrowdNavNode(Node):
         goal.header.stamp = self.get_clock().now().to_msg()
         goal.pose.position.x = float(world_x)
         goal.pose.position.y = float(world_y)
-        goal.pose.orientation.w = 1.0
+        goal.pose.orientation.w = yaw_to_quaternion(math.radians(YAW_DEG))
         self.nav_client.send_goal_async(NavigateToPose.Goal(pose=goal))
 
     # Runs the cycle of the program

@@ -1,13 +1,21 @@
 import numpy as np
-from np.linalg import norm
+from numpy.linalg import norm
 
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 
 from sensor_msgs.msg import LaserScan
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, Quaternion, Twist
+import math
 
+YAW_DEG      = 0.0
+
+def yaw_to_quaternion(yaw: float) -> Quaternion:
+    q = Quaternion()
+    q.z = math.sin(yaw * 0.5)
+    q.w = math.cos(yaw * 0.5)
+    return q
 
 class PhyVir(Node):
     subscriber_virtual = None
@@ -81,8 +89,8 @@ class PhyVir(Node):
                 pose.header.frame_id = phy_scan.header.frame_id
                 pose.pose.position.x = point[0]
                 pose.pose.position.y = point[1]
-                pose.pose.position.z = 0.0
-                pose.pose.orientation.w = 1.0
+
+                pose.pose.orientation= yaw_to_quaternion(math.radians(YAW_DEG))
 
                 discrepancies.append(pose)
 

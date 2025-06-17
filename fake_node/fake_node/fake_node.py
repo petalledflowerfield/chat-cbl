@@ -13,9 +13,9 @@ import math
 
 class fake_node(Node):
     def __init__(self):
-        super().__init__("fake_node")
+        super().__init__("phyvir_test_fake")
         print("working")
-        self.publisher = self.create_publisher(PoseStamped, "/phyvir", 10)
+        self.publisher = self.create_publisher(PoseStamped, "physc", 10)
         self.timer = self.create_timer(45, self.timer_callback)
 
     def timer_callback(self):

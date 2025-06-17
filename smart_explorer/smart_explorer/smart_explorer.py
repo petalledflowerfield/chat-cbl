@@ -53,12 +53,7 @@ class SmartExplorer(Node):
             cancel_future.add_done_callback(lambda f: self.get_logger().info("Wander goal cancelled."))
 
 
-        obj_pose = PoseStamped()
-        obj_pose.header.frame_id = "map"
-        obj_pose.header.stamp = self.get_clock().now().to_msg()
-        obj_pose.pose.position.x = msg.pose.position.x
-        obj_pose.pose.position.y = msg.pose.position.y
-        obj_pose.pose.orientation = yaw_to_quaternion(math.radians(YAW_DEG))
+
         self.arrived_at_Object = True
 
         msg = Bool()
@@ -67,7 +62,7 @@ class SmartExplorer(Node):
         self.get_logger().info("Approaching detected object...")
 
         goal_msg = NavigateToPose.Goal()
-        goal_msg.pose = obj_pose
+        goal_msg.pose = msg.pose
         send_goal_future= self.nav_client.send_goal_async(goal_msg)
         send_goal_future.add_done_callback(self.object_goal_response_callback)
         self.state = 'object'
