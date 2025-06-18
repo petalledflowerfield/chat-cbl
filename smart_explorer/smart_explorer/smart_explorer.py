@@ -27,64 +27,66 @@ class SmartExplorer(Node):
         super().__init__("smart_explorer")
         self.nav_client = ActionClient(self, NavigateToPose, "navigate_to_pose")
 
+
+        self.active_goal = None
+        self.has_obj_goal = False
+        self.has_wander_goal = False
+
         self.disc_angle = 0
         self.disc_distance = 0
         self.object_detected = False
-        self.wander_radius = 2.5
+        self.wander_radius = 0.6
         self.current_loc = (0, 0)
         self.arrived_at_Object = False
         self.subscription = self.create_subscription(
             PoseStamped, "discrepancies", self.object_callback, 10
         )
         self.publisher = self.create_publisher(Bool, "/arrived_at_object", 10)
+        self.control_loop()
         self.timer = self.create_timer(30, self.control_loop)
 
-        self.resume_timer = None
-        self.state = 'wander'
-        self.active_goal = None
 
 
     def object_callback(self, msg):
 
 
-        if self.active_goal:
+        if self.active_goal and self.has_wander_goal:
             self.get_logger().info("Cancelling current wander goal...")
             cancel_future = self.active_goal.cancel_goal_async()
             cancel_future.add_done_callback(lambda f: self.get_logger().info("Wander goal cancelled."))
+            self.has_wander_goal = False
 
 
 
-        self.arrived_at_Object = True
 
-        msg = Bool()
-        msg.data = self.arrived_at_Object
-        self.publisher.publish(msg)
-        self.get_logger().info("Approaching detected object...")
-
-        goal_msg = NavigateToPose.Goal()
-        goal_msg.pose = msg.pose
-        send_goal_future= self.nav_client.send_goal_async(goal_msg)
-        send_goal_future.add_done_callback(self.object_goal_response_callback)
-        self.state = 'object'
-        self.resume_timer = self.create_timer(45.0, self.resume_wandering)
+        if not self.has_obj_goal:
 
 
+            goal_msg = NavigateToPose.Goal()
+            goal_msg.pose = msg
+            send_goal_future= self.nav_client.send_goal_async(goal_msg)
+            self.get_logger().info(
+                f"Sending to object goal"
+            )
+            msgB = Bool()
+            msgB.data = self.arrived_at_Object
+            self.publisher.publish(msgB)
+            self.get_logger().info("Approaching detected object...")
+            self.has_obj_goal = True
+            send_goal_future.add_done_callback(self.object_goal_response_callback)
 
-    def resume_wandering(self):
-        self.get_logger().info("Done waiting. Switching back to wander mode.")
-        self.state = "wander"
 
 
-        if self.resume_timer is not None:
-            self.resume_timer.cancel()
-            self.resume_timer = None
+
+
+
 
     def control_loop(self):
         if not self.nav_client.wait_for_server(timeout_sec=1.0):
             self.get_logger().warn("Nav2 server not available.")
             return
 
-        if self.state == 'wander' and self.nav_client.server_is_ready():
+        if not self.has_wander_goal and not self.has_obj_goal:
             self.send_random_goal()
 
     def send_random_goal(self):
@@ -109,7 +111,7 @@ class SmartExplorer(Node):
 
         goal_msg = NavigateToPose.Goal()
         goal_msg.pose = goal_pose
-
+        self.has_wander_goal = True
         send_goal_future = self.nav_client.send_goal_async(goal_msg)
         send_goal_future.add_done_callback(self.wander_goal_response_callback)
 
@@ -132,14 +134,18 @@ class SmartExplorer(Node):
         self.get_logger().info("object goal accepted.")
 
         goal_handle.get_result_async().add_done_callback(self._result_cb)
+
         self.active_goal = goal_handle
 
     def _result_cb(self, fut):
         status = fut.result().status
         txt = {4:'SUCCEEDED',6:'ABORTED',5:'CANCELED'}.get(status,'DONE')
         self.get_logger().info(f'Goal result: {txt}')
-
-
+        if self.has_obj_goal:
+            self.arrived_at_Object = True
+            self.has_obj_goal = False
+        if self.has_wander_goal:
+            self.has_wander_goal = False
 
 
 def main():

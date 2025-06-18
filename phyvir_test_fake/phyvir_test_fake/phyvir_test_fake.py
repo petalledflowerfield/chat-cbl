@@ -43,13 +43,15 @@ class phyvir_test_fake(Node):
             modified_scan.ranges = list(self.latest_scan.ranges)
             modified_scan.intensities = list(self.latest_scan.intensities)
 
+
             # Simulate an obstacle by modifying 10 consecutive range values
             num_values_to_modify = 10
             start_index = random.randint(0, len(modified_scan.ranges) - num_values_to_modify)
             for i in range(start_index, start_index + num_values_to_modify):
-                modified_scan.ranges[i] = 0.5  # Simulated obstacle
+                modified_scan.ranges[i] = 0.2  # Simulated obstacle
 
             self.publisher.publish(modified_scan)
+            self.get_logger().warn("Published")
 
 def main(args=None):
     rclpy.init(args=args)
