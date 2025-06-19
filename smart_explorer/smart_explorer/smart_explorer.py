@@ -61,7 +61,8 @@ class SmartExplorer(Node):
 
         if not self.has_obj_goal:
 
-
+            msg.pose.position.x = msg.pose.position.x + self.current_loc[0]
+            msg.pose.position.y = msg.pose.position.y + self.current_loc[1]
             goal_msg = NavigateToPose.Goal()
             goal_msg.pose = msg
             send_goal_future= self.nav_client.send_goal_async(goal_msg)
@@ -74,7 +75,7 @@ class SmartExplorer(Node):
             self.get_logger().info("Approaching detected object...")
             self.has_obj_goal = True
             send_goal_future.add_done_callback(self.object_goal_response_callback)
-
+            self.current_loc = msg.pose.position.x, msg.pose.position.y
 
 
 
